@@ -15,6 +15,7 @@ Create the following secrets
 
  DOCKER_USERNAME 
  - your docker registry credentials
+ 
  DOCKER_PASSWORD 
  - .......
        
@@ -24,13 +25,15 @@ Create the following secrets
  MY_PHONE_NUMBER  
  - The phone number we want to inform when our build fails
 
- TWILIO_ACCOUNT_SID 
+ TWILIO_ACCOUNT_SID
  - Provided by Twillio
+ 
  TWILIO_API_KEY 
  - Provided by Twillio
+ 
  TWILIO_API_SECRET 
  - Provided by Twillio
      
 # Usage
- As a example, change the file itself and push it to master... Browse to github.com browse to the actions tab in your repo and the action should be running. 
+As a example, change the file itself and push it to master... Browse to github.com browse to the actions tab in your repo and the action should be running. 
  
