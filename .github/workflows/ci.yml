@@ -1,1 +1,61 @@
-#
+name: Build & Deploy Docker Image
+
+on: [push, pull_request] 
+# Trigger the workflow on push or pull, but only for the branch we want
+  push:
+    branches:
+      - master
+# Set env variables for github actions
+env:
+    REG: 'YOUR_DOCKER_REPOSITORY_HERE'
+    # The version you want to pull/push
+    VERSION: 'latest'
+# Jobs
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build the Docker image...........
+      run: docker build . --file Dockerfile --no-cache --tag "${{ env.REG }}:${{ env.VERSION }}"
+    # Scan our project with Anchore
+    - uses: anchore/scan-action@master
+      with:
+        image-reference: "${{ env.REG  }}:${{ env.VERSION }}"
+        dockerfile-path: "./Dockerfile"
+    # Example for using our own Anchore scan policy
+    #   custom-policy-path: .anchore/anchore_default_bundle.json
+    # Do we want to fail the build if the scan shows critical issues with out project?
+        fail-build: true
+    # Scan anchore output
+    - name: anchore inline scan JSON results........
+      run: for j in `ls ./anchore-reports/*.json`; do echo "---- ${j} ----"; cat ${j}; echo; done
+    # Super-Linter. Linting tool by github perfect for our actions
+    - name: Super-Linter
+      uses: github/super-linter@latest#v3.2.0
+      env:
+        # NOTE: When set to false, only new or edited files will be parsed for validation
+        VALIDATE_ALL_CODEBASE: false
+        DEFAULT_BRANCH: master    
+    # Publish
+    - name: Publish to docker registry
+      uses: docker/build-push-action@v1
+      with:
+      # Create github secrets named DOCKER_USERNAME and DOCKER_PASSWORD and provide the docker registry credentials 
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: ${{ env.REG  }}
+        tags: ${{ env.VERSION }}
+    # On failures lets SMS someone with our TWILIO number, create github secrets TWILIO_PHONE_NUMBER, MY_PHONE_NUMBER, TWILIO_ACCOUNT_SID, TWILIO_API_KEY, TWILIO_API_SECRET 
+    - name: 'Sending SMS Notification on failures'
+      if: failure()
+      uses: twilio-labs/actions-sms@v1
+      with:
+         fromPhoneNumber: ${{ secrets.TWILIO_PHONE_NUMBER }}
+         toPhoneNumber: ${{ secrets.MY_PHONE_NUMBER }}
+         message: "Build failure for ${{ env.REG }} - NOK"
+      env:
+        TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+        TWILIO_API_KEY: ${{ secrets.TWILIO_API_KEY }}
+        TWILIO_API_SECRET: ${{ secrets.TWILIO_API_SECRET }}
+# end
