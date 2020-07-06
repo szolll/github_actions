@@ -2,7 +2,7 @@
 
 Example of github actions... in action. 
 
-# Configuration
+## Configuration
 
 In your github root create a folder structure as listed below and add the flow. 
 The name of the file doesn't matter as long as it ends with .yml or .yaml
@@ -34,6 +34,7 @@ Create the following secrets
  TWILIO_API_SECRET 
  - Provided by Twillio
      
-# Usage
+## Usage
 As a example, change the file itself and push it to master... Browse to github.com browse to the actions tab in your repo and the action should be running. 
  
+## Steps
