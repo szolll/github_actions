@@ -39,7 +39,7 @@ jobs:
         DEFAULT_BRANCH: master    
     # Publish
     - name: Publish to docker registry
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v6
       with:
       # Create github secrets named DOCKER_USERNAME and DOCKER_PASSWORD and provide the docker registry credentials 
         username: ${{ secrets.DOCKER_USERNAME }}
