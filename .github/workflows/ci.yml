@@ -19,7 +19,7 @@ jobs:
     - name: Build the Docker image...........
       run: docker build . --file Dockerfile --no-cache --tag "${{ env.REG }}:${{ env.VERSION }}"
     # Scan our project with Anchore
-    - uses: anchore/scan-action@v5
+    - uses: anchore/scan-action@v6
       with:
         image-reference: "${{ env.REG  }}:${{ env.VERSION }}"
         dockerfile-path: "./Dockerfile"
