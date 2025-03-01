@@ -7,7 +7,7 @@ on:
       - master
 # Set env variables for github actions
 env:
-    REG: 'funkyB'
+    REG: 'funkyb'
     # The version you want to pull/push
     VERSION: 'latest'
 # Jobs
